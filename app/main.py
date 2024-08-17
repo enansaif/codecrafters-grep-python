@@ -15,6 +15,29 @@ def match_character_groups(input_line, pattern):
                 return True
         return False
 
+def match_character_classes(input_line, pattern):
+    i, j = 0, 0
+    while i < len(pattern) and j < len(input_line):
+        if pattern[i].isalnum() or pattern[i].isspace():
+            if pattern[i] != input_line[j]:
+                return False
+            i += 1
+            j += 1
+        else:
+            if pattern[i] == 'd':
+                if not input_line[j].isdigit():
+                    return False
+            if pattern[i] == 'w':
+                if not input_line[j].isalnum():
+                    return False
+            i += 2
+            j += 1
+            
+    if i != len(pattern) or j != len(input_line):
+        return False
+    return True
+            
+
 def match_pattern(input_line, pattern):
     if len(pattern) == 1:
         return pattern in input_line
@@ -25,7 +48,7 @@ def match_pattern(input_line, pattern):
     elif len(pattern) > 0 and pattern[0] == '[':
         return match_character_groups(input_line, pattern[1:-1])
     else:
-        raise RuntimeError(f"Unhandled pattern: {pattern}")
+        return match_character_classes(input_line, pattern)
 
 
 def main():
