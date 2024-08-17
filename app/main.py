@@ -3,6 +3,17 @@ import sys
 # import pyparsing - available if you need it!
 # import lark - available if you need it!
 
+def match_character_groups(input_line, pattern):
+    if len(pattern) > 0 and pattern[0] == '^':
+        for ch in pattern[1:]:
+            if ch in input_line:
+                return False
+        return True
+    else:
+        for ch in pattern:
+            if ch in input_line:
+                return True
+        return False
 
 def match_pattern(input_line, pattern):
     if len(pattern) == 1:
@@ -12,10 +23,7 @@ def match_pattern(input_line, pattern):
     elif pattern == r"\w":
         return any(ch.isalnum() for ch in input_line)
     elif len(pattern) > 0 and pattern[0] == '[':
-        for ch in pattern[1:-1]:
-            if ch in input_line:
-                return True
-        return False
+        return match_character_groups(input_line, pattern[1:-1])
     else:
         raise RuntimeError(f"Unhandled pattern: {pattern}")
 
