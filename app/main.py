@@ -7,9 +7,9 @@ import sys
 def match_pattern(input_line, pattern):
     if len(pattern) == 1:
         return pattern in input_line
-    elif pattern == "\d":
+    elif pattern == r"\d":
         return any(ch.isdigit() for ch in input_line)
-    elif pattern == "\w":
+    elif pattern == r"\w":
         return any(ch.isalnum() for ch in input_line)
     elif len(pattern) > 0 and pattern[0] == '[':
         for ch in input_line[1:-1]:
