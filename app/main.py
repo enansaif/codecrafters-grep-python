@@ -24,10 +24,10 @@ def match_character_classes(input_line, pattern):
             i += 1
             j += 1
         else:
-            if pattern[i] == 'd':
+            if pattern[i + 1] == 'd':
                 if not input_line[j].isdigit():
                     return False
-            if pattern[i] == 'w':
+            if pattern[i + 1] == 'w':
                 if not input_line[j].isalnum():
                     return False
             i += 2
