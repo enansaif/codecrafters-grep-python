@@ -39,13 +39,7 @@ def match_character_classes(input_line, pattern):
             
 
 def match_pattern(input_line, pattern):
-    if len(pattern) == 1:
-        return pattern in input_line
-    elif pattern == r"\d":
-        return any(ch.isdigit() for ch in input_line)
-    elif pattern == r"\w":
-        return any(ch.isalnum() for ch in input_line)
-    elif len(pattern) > 0 and pattern[0] == '[':
+    if len(pattern) > 0 and pattern[0] == '[':
         return match_character_groups(input_line, pattern[1:-1])
     else:
         return match_character_classes(input_line, pattern)
