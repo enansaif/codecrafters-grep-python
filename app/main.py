@@ -33,7 +33,7 @@ def match_character_classes(input_line, pattern):
             i += 2
             j += 1
             
-    if i != len(pattern) or j != len(input_line):
+    if i != len(pattern):
         return False
     return True
             
@@ -42,8 +42,10 @@ def match_pattern(input_line, pattern):
     if len(pattern) > 0 and pattern[0] == '[':
         return match_character_groups(input_line, pattern[1:-1])
     else:
-        return match_character_classes(input_line, pattern)
-
+        for i in range(len(input_line)):
+            if match_character_classes(input_line[i:], pattern):
+                return True
+        return False
 
 def main():
     pattern = sys.argv[2]
