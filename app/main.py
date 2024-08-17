@@ -12,7 +12,7 @@ def match_pattern(input_line, pattern):
     elif pattern == r"\w":
         return any(ch.isalnum() for ch in input_line)
     elif len(pattern) > 0 and pattern[0] == '[':
-        for ch in input_line[1:-1]:
+        for ch in pattern[1:-1]:
             if ch in input_line:
                 return True
         return False
