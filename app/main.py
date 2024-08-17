@@ -5,10 +5,10 @@ import sys
 
 
 def match_pattern(input_line, pattern):
-    print(input_line)
-    print(pattern)
     if len(pattern) == 1:
         return pattern in input_line
+    elif pattern == "\d":
+        return any(ch.isdigit() for ch in input_line)
     else:
         raise RuntimeError(f"Unhandled pattern: {pattern}")
 
