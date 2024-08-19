@@ -19,6 +19,16 @@ def match_character_classes(input_line, pattern):
     i, j = 0, 0
     while i < len(pattern) and j < len(input_line):
         if pattern[i].isalnum() or pattern[i].isspace():
+            #i have to handle + and ?
+            if i + 1 < len(pattern) and pattern[i + 1] == '+':
+                if pattern[i] != input_line[j]:
+                    return False
+                while j < len(input_line) and pattern[i] == input_line[j]:
+                    j += 1
+                i += 1
+                j -= 1
+            if i + 1 < len(pattern) and pattern[i + 1] == '?':
+                pass
             if pattern[i] != input_line[j]:
                 return False
             i += 1
@@ -32,11 +42,11 @@ def match_character_classes(input_line, pattern):
                     return False
             i += 2
             j += 1
-            
+
     if i != len(pattern):
         return False
     return True
-            
+
 
 def match_pattern(input_line, pattern):
     if len(pattern) > 0 and pattern[0] == '[':
