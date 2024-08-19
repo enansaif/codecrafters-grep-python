@@ -41,6 +41,10 @@ def match_character_classes(input_line, pattern):
 def match_pattern(input_line, pattern):
     if len(pattern) > 0 and pattern[0] == '[':
         return match_character_groups(input_line, pattern[1:-1])
+    if len(pattern) > 0 and pattern[0] == '^':
+        return input_line.startswith(pattern[1:])
+    if len(pattern) > 0 and pattern[-1] == '$':
+        return input_line.endswith(pattern[:-1])
     else:
         for i in range(len(input_line)):
             if match_character_classes(input_line[i:], pattern):
