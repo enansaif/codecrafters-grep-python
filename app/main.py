@@ -15,20 +15,67 @@ def match_character_groups(input_line, pattern):
                 return True
         return False
 
+def handle_backslash(input_line, pattern, ii, pi):
+    if pattern[pi + 1] == 'd':
+        if not input_line[ii].isdigit():
+            return False
+    if pattern[pi + 1] == 'w':
+        if not input_line[ii].isalnum():
+            return False
+    return ii + 1, pi + 2
+
+def handle_literals(input_line, pattern, ii, pi):
+    if pattern[pi] != input_line[ii]:
+        return False
+    return ii + 1, pi + 1
+
+def handle_quantifiers(input_line, pattern, ii, pi):
+    if pattern[pi + 1] == '+':
+        if pattern[pi] != input_line[ii]:
+            return False
+        while ii < len(input_line) and pattern[pi] == input_line[ii]:
+            ii += 1
+        return ii, pi + 2
+    
+    elif pattern[pi + 1] == '?':
+        if pattern[pi] != input_line[ii]:
+            return ii, pi + 2
+        if ii + 1 >= len(input_line):
+            return ii, pi + 2
+        if input_line[ii + 1] == pattern[pi]:
+            return False
+        return ii + 1, pi + 2
+
+def match_character_classes(input_line, pattern):
+    ii = pi = 0
+    while pi < len(pattern) and ii < len(input_line):
+        if pattern[pi] == "\\":
+            curr = handle_backslash(input_line, pattern, ii, pi)
+            if curr:
+                ii, pi = curr
+            else:
+                return False
+        elif pi + 1 < len(pattern) and pattern[pi + 1] in ['+', '?']:
+            curr = handle_quantifiers(input_line, pattern, ii, pi)
+            if curr:
+                ii, pi = curr
+            else:
+                return False
+        else:
+            curr = handle_literals(input_line, pattern, ii, pi)
+            if curr:
+                ii, pi = curr
+            else:
+                return False
+
+    if pi != len(pattern):
+        return False
+    return True
+
 def match_character_classes(input_line, pattern):
     i, j = 0, 0
     while i < len(pattern) and j < len(input_line):
         if pattern[i].isalnum() or pattern[i].isspace():
-            #i have to handle + and ?
-            if i + 1 < len(pattern) and pattern[i + 1] == '+':
-                if pattern[i] != input_line[j]:
-                    return False
-                while j < len(input_line) and pattern[i] == input_line[j]:
-                    j += 1
-                i += 1
-                j -= 1
-            if i + 1 < len(pattern) and pattern[i + 1] == '?':
-                pass
             if pattern[i] != input_line[j]:
                 return False
             i += 1
