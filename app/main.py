@@ -18,21 +18,23 @@ def match_character_groups(input_line, pattern):
 def handle_backslash(input_line, pattern, ii, pi):
     if pattern[pi + 1] == 'd':
         if not input_line[ii].isdigit():
-            return False
+            return None
     if pattern[pi + 1] == 'w':
         if not input_line[ii].isalnum():
-            return False
+            return None
     return ii + 1, pi + 2
 
 def handle_literals(input_line, pattern, ii, pi):
+    if pattern[pi] == '.':
+        return ii + 1, pi + 1
     if pattern[pi] != input_line[ii]:
-        return False
+        return None
     return ii + 1, pi + 1
 
 def handle_quantifiers(input_line, pattern, ii, pi):
     if pattern[pi + 1] == '+':
         if pattern[pi] != input_line[ii]:
-            return False
+            return None
         while ii < len(input_line) and pattern[pi] == input_line[ii]:
             ii += 1
         return ii, pi + 2
@@ -43,30 +45,27 @@ def handle_quantifiers(input_line, pattern, ii, pi):
         if ii + 1 >= len(input_line):
             return ii, pi + 2
         if input_line[ii + 1] == pattern[pi]:
-            return False
+            return None
         return ii + 1, pi + 2
 
 def match_character_classes(input_line, pattern):
     ii = pi = 0
     while pi < len(pattern) and ii < len(input_line):
         if pattern[pi] == "\\":
-            curr = handle_backslash(input_line, pattern, ii, pi)
-            if curr:
-                ii, pi = curr
-            else:
-                return False
+            try:
+                ii, pi = handle_backslash(input_line, pattern, ii, pi)
+            except TypeError:
+                raise TypeError("Invalid")
         elif pi + 1 < len(pattern) and pattern[pi + 1] in ['+', '?']:
-            curr = handle_quantifiers(input_line, pattern, ii, pi)
-            if curr:
-                ii, pi = curr
-            else:
-                return False
+            try:
+                ii, pi = handle_quantifiers(input_line, pattern, ii, pi)
+            except TypeError:
+                raise TypeError("Invalid")
         else:
-            curr = handle_literals(input_line, pattern, ii, pi)
-            if curr:
-                ii, pi = curr
-            else:
-                return False
+            try:
+                ii, pi = handle_literals(input_line, pattern, ii, pi)
+            except TypeError:
+                raise TypeError("Invalid")
 
     if pi != len(pattern):
         return False
@@ -81,8 +80,11 @@ def match_pattern(input_line, pattern):
         return input_line.endswith(pattern[:-1])
     else:
         for i in range(len(input_line)):
-            if match_character_classes(input_line[i:], pattern):
-                return True
+            try:
+                if match_character_classes(input_line[i:], pattern):
+                    return True
+            except TypeError:
+                continue
         return False
 
 def main():
