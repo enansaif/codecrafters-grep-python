@@ -27,6 +27,16 @@ def handle_backslash(input_line, pattern, ii, pi):
 def handle_literals(input_line, pattern, ii, pi):
     if pattern[pi] == '.':
         return ii + 1, pi + 1
+    if pattern[pi] == '(':
+        i = pi
+        while pattern[i] != ')':
+            i += 1
+        words = pattern[pi + 1 : i].split('|')
+        for word in words:
+            if input_line[ii: ii + len(word)] == word:
+                if handle_literals(input_line, pattern, ii + len(word), i + 1):
+                    return True
+        return False
     if pattern[pi] != input_line[ii]:
         return None
     return ii + 1, pi + 1
