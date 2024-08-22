@@ -27,7 +27,7 @@ def handle_backslash(input_line, pattern, ii, pi):
 def handle_literals(input_line, pattern, ii, pi):
     if pi == len(pattern) - 1:
         return True
-    if ii == len(pattern) - 1:
+    if ii == len(input_line) - 1:
         return False
     if pattern[pi] == '.':
         return ii + 1, pi + 1
